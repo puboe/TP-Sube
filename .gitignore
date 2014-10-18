@@ -6,3 +6,9 @@ pom.xml.versionsBackup
 pom.xml.next
 release.properties
 dependency-reduced-pom.xml
+*/.settings
+*/.classpath
+*/.project
+.settings
+*.iml
+.project
