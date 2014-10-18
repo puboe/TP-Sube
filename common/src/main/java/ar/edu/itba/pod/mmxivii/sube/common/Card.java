@@ -11,43 +11,37 @@ public class Card implements Serializable
 	@Nonnull UID id;
 	@Nonnull String cardHolder;
 	@Nonnull String label;
+	
+	private static final long serialVersionUID = -3901673916831330741L;
 
-	public Card(@Nonnull UID id, @Nonnull String cardHolder, @Nonnull String label)
-	{
+	public Card(@Nonnull UID id, @Nonnull String cardHolder, @Nonnull String label) {
 		this.id = checkNotNull(id);
 		this.cardHolder = assertText(checkNotNull(cardHolder));
 		this.label = assertText(checkNotNull(label));
 	}
 
 	@Nonnull
-	public UID getId()
-	{
+	public UID getId() {
 		return id;
 	}
 
 	@Nonnull
-	public String getCardHolder()
-	{
+	public String getCardHolder() {
 		return cardHolder;
 	}
 
 	@Nonnull
-	public String getLabel()
-	{
+	public String getLabel() {
 		return label;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
+	public boolean equals(Object o) {
 		return this == o || !(o == null || getClass() != o.getClass()) && id.equals(((Card) o).id);
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return id.hashCode();
 	}
-
-	private static final long serialVersionUID = -3901673916831330741L;
 }

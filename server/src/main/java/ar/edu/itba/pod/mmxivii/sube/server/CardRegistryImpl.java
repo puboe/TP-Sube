@@ -13,21 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.*;
 
-public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistry
-{
+public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistry {
 	private static final long serialVersionUID = 2990708481011754484L;
 	private final ConcurrentHashMap<UID, Card> cards = new ConcurrentHashMap<UID, Card>();
 	private final ConcurrentHashMap<UID, Double> balances = new ConcurrentHashMap<UID, Double>();
 
-	public CardRegistryImpl() throws RemoteException
-	{
+	public CardRegistryImpl() throws RemoteException {
 		super();
 	}
 
 	@Nonnull
 	@Override
-	public Card newCard(@Nonnull String cardHolder, @Nonnull String label)
-	{
+	public Card newCard(@Nonnull String cardHolder, @Nonnull String label) {
 		assertText(cardHolder);
 		assertText(label);
 		final UID id = new UID();
@@ -40,23 +37,20 @@ public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistr
 
 	@Override
 	@Nullable
-	public Card getCard(@Nonnull UID id)
-	{
+	public Card getCard(@Nonnull UID id) {
 		delay();
 		return cards.get(checkNotNull(id));
 	}
 
 	@Override
-	public double getCardBalance(@Nonnull UID id)
-	{
+	public double getCardBalance(@Nonnull UID id) {
 		delay();
 		final Double result = balances.get(checkNotNull(id));
 		return result == null ? CARD_NOT_FOUND : result;
 	}
 
 	@Override
-	public double addCardOperation(@Nonnull UID id, @Nonnull String description, double amount)
-	{
+	public double addCardOperation(@Nonnull UID id, @Nonnull String description, double amount) {
 		assertAmount(amount);
 		assertText(description);
 		delay();
@@ -71,8 +65,7 @@ public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistr
 		}
 	}
 
-	Collection<Card> getCards()
-	{
+	Collection<Card> getCards() {
 		return cards.values();
 	}
 }

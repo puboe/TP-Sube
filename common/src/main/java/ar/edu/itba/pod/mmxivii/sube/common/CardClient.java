@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import java.rmi.RemoteException;
 import java.rmi.server.UID;
 
-public interface CardClient extends CardService
-{
+public interface CardClient extends CardService {
+	
 	/**
 	 *
 	 * @param cardHolder el usuario dueño de la tarjeta, tiene que ser el username del alumno, así distinguimos quien está usando el sistema

@@ -14,14 +14,12 @@ import static ar.edu.itba.pod.mmxivii.sube.common.Utils.CARD_REGISTRY_BIND;
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.checkNotNull;
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.delay;
 
-public class CardClientImpl extends UnicastRemoteObject implements CardClient
-{
+public class CardClientImpl extends UnicastRemoteObject implements CardClient {
 	private static final long serialVersionUID = 3498345765116694167L;
 	private CardRegistry cardRegistry;
 	private final CardServiceRegistryImpl cardServiceRegistry;
 
-	public CardClientImpl(@Nonnull CardRegistry cardRegistry, @Nonnull CardServiceRegistryImpl cardServiceRegistry) throws RemoteException
-	{
+	public CardClientImpl(@Nonnull CardRegistry cardRegistry, @Nonnull CardServiceRegistryImpl cardServiceRegistry) throws RemoteException {
 		super();
 		this.cardRegistry = cardRegistry;
 		this.cardServiceRegistry = cardServiceRegistry;
@@ -29,8 +27,7 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient
 
 	@Nonnull
 	@Override
-	public Card newCard(@Nonnull String cardHolder, @Nonnull String label) throws RemoteException
-	{
+	public Card newCard(@Nonnull String cardHolder, @Nonnull String label) throws RemoteException {
 		delay();
 		try {
 			return cardRegistry.newCard(cardHolder,label);
@@ -45,8 +42,7 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient
 		}
 	}
 
-	private void reconnectCardRegistry() throws NotBoundException
-	{
+	private void reconnectCardRegistry() throws NotBoundException {
 		cardRegistry = Utils.lookupObject(CARD_REGISTRY_BIND);
 	}
 

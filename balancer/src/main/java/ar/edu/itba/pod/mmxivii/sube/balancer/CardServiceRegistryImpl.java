@@ -11,23 +11,23 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class CardServiceRegistryImpl extends UnicastRemoteObject implements CardServiceRegistry
-{
+public class CardServiceRegistryImpl extends UnicastRemoteObject implements CardServiceRegistry {
+
 	private static final long serialVersionUID = 2473638728674152366L;
 	private final List<CardService> serviceList = Collections.synchronizedList(new ArrayList<CardService>());
 
 	protected CardServiceRegistryImpl() throws RemoteException {}
 
 	@Override
-	public void registerService(@Nonnull CardService service) throws RemoteException
-	{
+	public void registerService(@Nonnull CardService service) throws RemoteException {
+        System.out.println("Service: " + service.hashCode() + " registered.");
 		serviceList.add(service);
 	}
 
 	@Override
-	public void unRegisterService(@Nonnull CardService service) throws RemoteException
-	{
-		serviceList.remove(service);
+	public void unRegisterService(@Nonnull CardService service) throws RemoteException {
+        System.out.println("Service: " + service.hashCode() + " unregistered.");
+        serviceList.remove(service);
 	}
 
 	@Override

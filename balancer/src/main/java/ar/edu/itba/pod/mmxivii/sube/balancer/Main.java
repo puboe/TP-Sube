@@ -11,12 +11,10 @@ import java.util.Scanner;
 
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.*;
 
-public class Main extends BaseMain
-{
-	private static Main main = null;
+public class Main extends BaseMain {
+    private static Main main = null;
 
-	private Main(@Nonnull String[] args) throws RemoteException, NotBoundException
-	{
+	private Main(@Nonnull String[] args) throws RemoteException, NotBoundException {
 		super(args, DEFAULT_CLIENT_OPTIONS);
 		getRegistry();
 		setDelay();
@@ -28,14 +26,12 @@ public class Main extends BaseMain
 		bindObject(CARD_CLIENT_BIND, cardClient);
 	}
 
-	public static void main(@Nonnull String[] args) throws Exception
-	{
+	public static void main(@Nonnull String[] args) throws Exception {
 		main = new Main(args);
 		main.run();
 	}
 
-	private void run()
-	{
+	private void run() {
 		System.out.println("Starting Balancer!");
 		final Scanner scan = new Scanner(System.in);
 		String line;
@@ -49,8 +45,7 @@ public class Main extends BaseMain
 
 	}
 
-	public static void shutdown()
-	{
+	public static void shutdown() {
 		main.unbindObject(CARD_SERVICE_REGISTRY_BIND);
 		main.unbindObject(CARD_CLIENT_BIND);
 	}

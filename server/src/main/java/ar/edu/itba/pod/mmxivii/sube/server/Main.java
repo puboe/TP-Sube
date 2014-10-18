@@ -10,6 +10,10 @@ import java.util.Scanner;
 
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.*;
 
+/*
+** rmiregistry -J-Dclasspath=/Users/Pablo/Documents/Repos/tp-sube/common/target/sube-common-1.0-SNAPSHOT.jar 7242
+*/
+
 public class Main extends BaseMain
 {
 	private static Main main = null;
