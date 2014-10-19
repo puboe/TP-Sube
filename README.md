@@ -1,4 +1,4 @@
-S.U.B.E. - Sistema Útil para "B"erificar Estudiantes
+S.U.B.E. - Sistema Útil para Verificar Estudiantes
 =======================================
 
 El objetivo de este trabajo práctico es implementar un servicio distribuído que registre operaciones de consulta, uso y carga de una supuesta tarjeta similar a la SUBE.
