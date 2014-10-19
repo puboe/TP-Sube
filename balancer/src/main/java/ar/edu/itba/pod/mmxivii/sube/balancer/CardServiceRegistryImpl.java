@@ -42,7 +42,20 @@ public class CardServiceRegistryImpl extends UnicastRemoteObject implements Card
 
 	CardService getCardService()
 	{
-		int nextCardService =  this.nextCardService.getAndIncrement();
-		return serviceList.get(nextCardService % serviceList.size());
+		if (serviceList.size() > 0) {
+			int nextCardService =  this.nextCardService.getAndIncrement();
+			return serviceList.get(nextCardService % serviceList.size());
+		} else {
+			throw new NoCardServiceException();
+		}
+	}
+	
+	public static class NoCardServiceException extends RuntimeException {
+		public NoCardServiceException() {
+			super();
+		}
+		public NoCardServiceException(String message) {
+			super(message);
+		}
 	}
 }
