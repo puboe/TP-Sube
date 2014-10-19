@@ -16,26 +16,29 @@ import static ar.edu.itba.pod.mmxivii.sube.common.Utils.CARD_SERVICE_REGISTRY_BI
 public class Main extends BaseMain
 {
 	private final CardServiceRegistry cardServiceRegistry;
-	private final CardServiceImpl cardService;
+	private CardServiceImpl cardService = null;
 
-	private Main(@Nonnull String[] args) throws RemoteException, NotBoundException
-	{
+	private Main(@Nonnull String[] args) throws RemoteException, NotBoundException {
 		super(args, DEFAULT_CLIENT_OPTIONS);
 		getRegistry();
 		final CardRegistry cardRegistry = Utils.lookupObject(CARD_REGISTRY_BIND);
 		cardServiceRegistry = Utils.lookupObject(CARD_SERVICE_REGISTRY_BIND);
-		cardService = new CardServiceImpl(cardRegistry);
+        try {
+            cardService = new CardServiceImpl(cardRegistry);
+        } catch (Exception e) {
+            System.out.println("Could not start service. Exiting...");
+            System.exit(1);
+        }
 	}
 
-	public static void main(@Nonnull String[] args) throws Exception
-	{
+	public static void main(@Nonnull String[] args) throws Exception {
 		final Main main = new Main(args);
 		main.run();
 	}
 
-	private void run() throws RemoteException
-	{
+	private void run() throws RemoteException {
 		cardServiceRegistry.registerService(cardService);
+
 		System.out.println("Starting Service!");
 		final Scanner scan = new Scanner(System.in);
 		String line;
@@ -43,6 +46,7 @@ public class Main extends BaseMain
 			line = scan.next();
 			System.out.println("Service running");
 		} while(!"x".equals(line));
+        cardService.finalize();
 		System.out.println("Service exit.");
 		System.exit(0);
 
