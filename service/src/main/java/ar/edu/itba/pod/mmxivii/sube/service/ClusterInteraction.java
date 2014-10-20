@@ -43,7 +43,7 @@ class ClusterInteraction extends ReceiverAdapter {
     }
 
     public void receive(Message msg) {
-        if(!myAddress.equals(msg.getSrc())) {
+//        if(!myAddress.equals(msg.getSrc())) {
 	    	System.out.println(msg.getSrc() + ": " + msg.getObject());
             try {
                 Operation operation = (Operation) msg.getObject();
@@ -62,7 +62,7 @@ class ClusterInteraction extends ReceiverAdapter {
             } catch(ClassCastException e) {
                 System.out.println("Me mandaron cualquier cosa: " + e.getLocalizedMessage());
             }
-        }
+//        }
     }
 
     public void send(Operation operation) {
