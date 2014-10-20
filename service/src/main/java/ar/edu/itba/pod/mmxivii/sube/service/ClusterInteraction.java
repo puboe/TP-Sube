@@ -1,11 +1,14 @@
 package ar.edu.itba.pod.mmxivii.sube.service;
 
 import org.jgroups.*;
+import org.jgroups.blocks.locking.LockService;
 
 import javax.annotation.Nonnull;
+
 import java.rmi.server.UID;
 import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Created by Pablo on 18/10/14.
@@ -16,13 +19,20 @@ class ClusterInteraction extends ReceiverAdapter {
     private Address myAddress;
     private CardServiceImpl cardService;
     private final String CLUSTER_NAME = "SERVICE_CLUSTER";
+    private LockService lockService;
+    private Lock leaderLock;
+    private Thread racingThread;
+    
+    private boolean isLeader = false;
 
     public ClusterInteraction(@Nonnull CardServiceImpl cardService) throws Exception {
         System.out.println("Running...");
         this.cardService = cardService;
-        channel = new JChannel();
+        channel = new JChannel(ClusterInteraction.class.getClassLoader().getResourceAsStream("udp.xml"));
         channel.setReceiver(this);
         connect(CLUSTER_NAME);
+        lockService = new LockService(channel);
+        raceForLeader();
     }
 
     public void connect(String clusterName) throws Exception {
@@ -78,4 +88,18 @@ class ClusterInteraction extends ReceiverAdapter {
         return channel;
     }
 
+    public void raceForLeader() {
+    	racingThread = new Thread() {
+	    	@Override
+	    	public void run()
+	    	{
+	    		leaderLock = lockService.getLock("leader");
+	        	leaderLock.lock();
+	        	isLeader = true;
+	        	System.out.println("I am the leader.");
+	    	}
+    	};
+    	racingThread.setDaemon(true);
+    	racingThread.start();
+    }
 }

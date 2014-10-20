@@ -29,6 +29,7 @@ public class Main extends BaseMain {
         try {
             cardService = new CardServiceImpl(cardRegistry);
         } catch (Exception e) {
+        	e.printStackTrace();
             System.out.println("Could not start service. Exiting...");
             System.exit(1);
         }
