@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.mmxivii.sube.service;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.rmi.server.UID;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,7 +9,7 @@ import java.util.Date;
 /**
  * Created by Pablo on 18/10/14.
  */
-class Operation {
+class Operation implements Serializable {
 
     private Date timestamp = Calendar.getInstance().getTime();
     private double amount;

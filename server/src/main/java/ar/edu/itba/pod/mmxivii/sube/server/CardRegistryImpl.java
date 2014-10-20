@@ -32,6 +32,7 @@ public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistr
 		final Card card = new Card(id, cardHolder, label);
 		cards.put(id, card);
 		delay();
+        System.out.println("Card created: " + card);
 		return card;
 	}
 
@@ -39,6 +40,7 @@ public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistr
 	@Nullable
 	public Card getCard(@Nonnull UID id) {
 		delay();
+        System.out.println("Card getted: " + cards.get(checkNotNull(id)));
 		return cards.get(checkNotNull(id));
 	}
 
@@ -46,7 +48,8 @@ public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistr
 	public double getCardBalance(@Nonnull UID id) {
 		delay();
 		final Double result = balances.get(checkNotNull(id));
-		return result == null ? CARD_NOT_FOUND : result;
+//        System.out.println("Card balance getted: " + cards.get(checkNotNull(id)) + ", balance: " + result == null ? CARD_NOT_FOUND : result);
+        return result == null ? CARD_NOT_FOUND : result;
 	}
 
 	@Override
@@ -61,6 +64,7 @@ public class CardRegistryImpl extends UnicastRemoteObject implements CardRegistr
 			result = result + amount;
 			if (result < 0 || result > MAX_BALANCE) return OPERATION_NOT_PERMITTED_BY_BALANCE;
 			balances.put(id, result);
+//            System.out.println("Operation CardId: " + id + ", description: " + description + ", amount: " + amount);
 			return result;
 		}
 	}

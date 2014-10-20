@@ -44,4 +44,9 @@ public class Card implements Serializable
 	public int hashCode() {
 		return id.hashCode();
 	}
+
+    @Override
+    public String toString() {
+        return "CardId: " + id + ", CardHolder: " + cardHolder + ", Label: " + label;
+    }
 }

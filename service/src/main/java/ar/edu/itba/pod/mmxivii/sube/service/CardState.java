@@ -1,11 +1,12 @@
 package ar.edu.itba.pod.mmxivii.sube.service;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Pablo on 19/10/14.
  */
-class CardState {
+class CardState implements Serializable {
 
     double amount;
     Date timestamp;

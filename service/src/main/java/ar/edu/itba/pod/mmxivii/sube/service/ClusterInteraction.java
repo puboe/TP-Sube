@@ -4,6 +4,7 @@ import org.jgroups.*;
 
 import javax.annotation.Nonnull;
 import java.rmi.server.UID;
+import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -49,6 +50,9 @@ class ClusterInteraction extends ReceiverAdapter {
 
                 if(operation != null && (operation instanceof Operation)) {
                     ConcurrentHashMap<UID, CardState> cardStates = cardService.getCardStates();
+                    if(!cardStates.containsKey(operation.getCardId())) {
+                        cardStates.put(operation.getCardId(), new CardState(0, Calendar.getInstance().getTime()));
+                    }
                     CardState cardState = cardStates.get(operation.getCardId());
                     cardState.setAmount(cardState.getAmount() + operation.getAmount());
                     if(operation.getTimestamp().after(cardState.getTimestamp())) {

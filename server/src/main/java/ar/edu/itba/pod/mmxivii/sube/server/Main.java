@@ -11,6 +11,7 @@ import java.util.Scanner;
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.*;
 
 /*
+** export CLASSPATH=/Users/Pablo/Documents/Repos/tp-sube/comn/target/sube-common-1.0-SNAPSHOT.jar
 ** rmiregistry -J-Dclasspath=/Users/Pablo/Documents/Repos/tp-sube/common/target/sube-common-1.0-SNAPSHOT.jar 7242
 */
 
