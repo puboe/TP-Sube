@@ -31,4 +31,9 @@ class CardState implements Serializable {
     double getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "Balance: " + amount + ", Timestamp: " + timestamp;
+    }
 }

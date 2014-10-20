@@ -8,13 +8,16 @@ import ar.edu.itba.pod.mmxivii.sube.common.Utils;
 import javax.annotation.Nonnull;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.UID;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.CARD_REGISTRY_BIND;
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.CARD_SERVICE_REGISTRY_BIND;
 
-public class Main extends BaseMain
-{
+// Run with -Djava.net.preferIPv4Stack=true
+public class Main extends BaseMain {
+
 	private final CardServiceRegistry cardServiceRegistry;
 	private CardServiceImpl cardService = null;
 
@@ -44,12 +47,18 @@ public class Main extends BaseMain
 		String line;
 		do {
 			line = scan.next();
-			System.out.println("Service running");
+            printBalance();
 		} while(!"x".equals(line));
         cardService.finalize();
 		System.out.println("Service exit.");
 		System.exit(0);
-
 	}
+
+    private void printBalance() {
+        ConcurrentHashMap<UID, CardState> map = cardService.getCardStates();
+        for(UID card: map.keySet()) {
+            System.out.println(card + ": " + map.get(card));
+        }
+    }
 }
 
