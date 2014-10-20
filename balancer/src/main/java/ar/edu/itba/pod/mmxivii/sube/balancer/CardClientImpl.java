@@ -1,9 +1,11 @@
 package ar.edu.itba.pod.mmxivii.sube.balancer;
 
+import ar.edu.itba.pod.mmxivii.sube.balancer.CardServiceRegistryImpl.NoCardServiceException;
 import ar.edu.itba.pod.mmxivii.sube.common.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -18,6 +20,8 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient {
 	private static final long serialVersionUID = 3498345765116694167L;
 	private CardRegistry cardRegistry;
 	private final CardServiceRegistryImpl cardServiceRegistry;
+	
+	
 
 	public CardClientImpl(@Nonnull CardRegistry cardRegistry, @Nonnull CardServiceRegistryImpl cardServiceRegistry) throws RemoteException {
 		super();
@@ -66,20 +70,52 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient {
 	@Override
 	public double getCardBalance(@Nonnull UID id) throws RemoteException
 	{
-		return getCardService().getCardBalance(id);
+		CardService service = null;
+		try {
+			service = getCardService();
+			return getCardService().getCardBalance(id);
+		} catch (NoCardServiceException e) {
+			return CardRegistry.CANNOT_PROCESS_REQUEST;
+		} catch (RemoteException e) {
+			// Unregister failing service
+			if (service != null)
+				cardServiceRegistry.unRegisterService(service);
+			return getCardBalance(id); //Retry
+		}
 	}
 
 	@Override
 	public double travel(@Nonnull UID id, @Nonnull String description, double amount) throws RemoteException
 	{
-		return getCardService().travel(id, description, amount);
+		CardService service = null;
+		try {
+			service = getCardService();
+			return getCardService().travel(id, description, amount);
+		} catch (NoCardServiceException e) {
+			return CardRegistry.CANNOT_PROCESS_REQUEST;
+		} catch (RemoteException e) {
+			// Unregister failing service
+			if (service != null)
+				cardServiceRegistry.unRegisterService(service);
+			return travel(id, description, amount);
+		}
 	}
 
 	@Override
 	public double recharge(@Nonnull UID id, @Nonnull String description, double amount) throws RemoteException
 	{
-		// @ToDo catch de excepciones
-		return getCardService().recharge(id, description, amount);
+		CardService service = null;
+		try {
+			service = getCardService();
+			return getCardService().recharge(id, description, amount);
+		} catch (NoCardServiceException e) {
+			return CardRegistry.CANNOT_PROCESS_REQUEST;
+		} catch (RemoteException e) {
+			// Unregister failing service
+			if (service != null)
+				cardServiceRegistry.unRegisterService(service);
+			return recharge(id, description, amount);
+		}
 	}
 
 	private CardService getCardService()
