@@ -78,6 +78,7 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient {
 			return CardRegistry.CANNOT_PROCESS_REQUEST;
 		} catch (ConnectException e) {
 			// Unregister failing service
+			e.printStackTrace();
 			if (service != null)
 				cardServiceRegistry.unRegisterService(service);
 			return getCardBalance(id); //Retry
@@ -95,6 +96,7 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient {
 			return CardRegistry.CANNOT_PROCESS_REQUEST;
 		} catch (ConnectException e) {
 			// Unregister failing service
+			e.printStackTrace();
 			if (service != null)
 				cardServiceRegistry.unRegisterService(service);
 			return travel(id, description, amount);
@@ -110,8 +112,9 @@ public class CardClientImpl extends UnicastRemoteObject implements CardClient {
 			return service.recharge(id, description, amount);
 		} catch (NoCardServiceException e) {
 			return CardRegistry.CANNOT_PROCESS_REQUEST;
-		} catch (RemoteException e) {
+		} catch (ConnectException e) {
 			// Unregister failing service
+			e.printStackTrace();
 			if (service != null)
 				cardServiceRegistry.unRegisterService(service);
 			return recharge(id, description, amount);
