@@ -16,6 +16,7 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
 	private final CardRegistry cardRegistry;
     private ConcurrentHashMap<UID, CardState> cardStates = new ConcurrentHashMap<UID, CardState>();
     private ClusterInteraction clusterInteraction;
+    private boolean leader = false;
 
 	public CardServiceImpl(@Nonnull CardRegistry cardRegistry) throws Exception {
 		super(0);
@@ -74,4 +75,26 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
         clusterInteraction.disconnect();
     }
 
+    public double downloadToServer() {
+        try {
+            for (UID cardId : cardStates.keySet()) {
+                double balance = cardRegistry.getCardBalance(cardId);
+                CardState cardState = cardStates.get(cardId);
+                double operationAmount = cardState.getAmount() - balance;
+                return cardRegistry.addCardOperation(cardId, "Operation", operationAmount);
+            }
+        } catch (Exception e) {
+            System.out.println("Could not download to server.");
+            e.printStackTrace();
+        }
+        return CardRegistry.CANNOT_PROCESS_REQUEST;
+    }
+
+    public void setLeader(boolean isLeader) {
+        this.leader = isLeader;
+    }
+
+    public boolean isLeader() {
+        return leader;
+    }
 }

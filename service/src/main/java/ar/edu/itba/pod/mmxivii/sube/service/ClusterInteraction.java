@@ -88,6 +88,10 @@ class ClusterInteraction extends ReceiverAdapter {
         return channel;
     }
 
+    public boolean isLeader() {
+        return isLeader;
+    }
+
     public void raceForLeader() {
     	racingThread = new Thread() {
 	    	@Override
@@ -95,7 +99,7 @@ class ClusterInteraction extends ReceiverAdapter {
 	    	{
 	    		leaderLock = lockService.getLock("leader");
 	        	leaderLock.lock();
-	        	isLeader = true;
+	        	cardService.setLeader(true);
 	        	System.out.println("I am the leader.");
 	    	}
     	};

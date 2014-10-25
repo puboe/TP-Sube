@@ -10,6 +10,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UID;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static ar.edu.itba.pod.mmxivii.sube.common.Utils.CARD_REGISTRY_BIND;
@@ -44,6 +46,21 @@ public class Main extends BaseMain {
 		cardServiceRegistry.registerService(cardService);
 
 		System.out.println("Starting Service!");
+
+        TimerTask timerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                if(cardService.isLeader()) {
+                    System.out.println("Downloading to server.");
+                    cardService.downloadToServer();
+                }
+            }
+        };
+
+        Timer timer = new Timer("DownloadTimer");//create a new Timer
+        timer.scheduleAtFixedRate(timerTask, 30, 30000);//this line starts the timer at the same time its executed
+
 		final Scanner scan = new Scanner(System.in);
 		String line;
 		do {
@@ -62,5 +79,6 @@ public class Main extends BaseMain {
             System.out.println(card + ": " + map.get(card));
         }
     }
+
 }
 

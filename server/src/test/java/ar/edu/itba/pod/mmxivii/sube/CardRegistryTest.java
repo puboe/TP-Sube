@@ -17,93 +17,93 @@ import static org.assertj.core.api.Assertions.*;
 
 public class CardRegistryTest
 {
-	private CardRegistry cardRegistry = null;
-
-	public CardRegistryTest() {}
-
-	@Before
-	public void setUp() throws Exception
-	{
-		cardRegistry = new CardRegistryImpl();
-		Utils.skipDelay(true);
-	}
-
-	@Test public void baseTest()
-	{
-		try {
-			final Card card = cardRegistry.newCard(TEST_CARD_HOLDER, TEST_LABEL);
-			assertThat(card).isNotNull();
-			assertThat(card.getCardHolder()).isEqualTo(TEST_CARD_HOLDER);
-
-			final double balance = cardRegistry.getCardBalance(card.getId());
-			assertThat(balance).isEqualTo(0d);
-
-			final Card other = cardRegistry.getCard(card.getId());
-			assertThat(other).isEqualTo(card);
-
-			final double value = 44d;
-			final double newValue = cardRegistry.addCardOperation(card.getId(), "test", value);
-			assertThat(newValue).isEqualTo(value);
-
-			final double newBalance = cardRegistry.getCardBalance(card.getId());
-			assertThat(newBalance).isEqualTo(value);
-
-			final UID invalidId = new UID();
-			assertThat(cardRegistry.getCard(invalidId)).isNull();
-			assertThat(cardRegistry.getCardBalance(invalidId)).isEqualTo(CardRegistry.CARD_NOT_FOUND);
-		} catch (RemoteException ignored) {}
-	}
-
-	@Test public void amountsTest()
-	{
-		try {
-			final Card card = cardRegistry.newCard(TEST_CARD_HOLDER, TEST_LABEL);
-			assertThat(card).isNotNull();
-			assertThat(card.getCardHolder()).isEqualTo(TEST_CARD_HOLDER);
-
-			final double balance = cardRegistry.getCardBalance(card.getId());
-			assertThat(balance).isEqualTo(0d);
-
-			final double value = 44d;
-			final double newValue = cardRegistry.addCardOperation(card.getId(), "test", value);
-			assertThat(newValue).isEqualTo(value);
-
-			assertThat(cardRegistry.getCardBalance(card.getId())).isEqualTo(value);
-
-			assertThat(cardRegistry.addCardOperation(card.getId(), "test", 99d)).isEqualTo(CardRegistry.OPERATION_NOT_PERMITTED_BY_BALANCE);
-			assertThat(cardRegistry.addCardOperation(card.getId(), "test", -99d)).isEqualTo(CardRegistry.OPERATION_NOT_PERMITTED_BY_BALANCE);
-
-			assertThat(cardRegistry.getCardBalance(card.getId())).isEqualTo(value);
-		} catch (RemoteException ignored) {}
-	}
-
-	@Test public void concurrencyBaseTest()
-	{
-		new MultithreadingTester().add(new RunnableAssert("testing")
-		{
-			@Override
-			public void run() throws Exception
-			{
-				final String cardHolder = randomString(TEST_CARD_HOLDER);
-				final String label = randomString(TEST_LABEL);
-				final Card card = cardRegistry.newCard(cardHolder, label);
-
-				assertThat(card.getCardHolder()).isEqualTo(cardHolder);
-				assertThat(card.getLabel()).isEqualTo(label);
-
-				final Card other = cardRegistry.getCard(card.getId());
-				assertThat(other).isEqualTo(card);
-
-				double balance = cardRegistry.getCardBalance(card.getId());
-				assertThat(balance).isEqualTo(0d);
-
-				for (int i = 0; i < 10; i++) {
-					final double newBalance = cardRegistry.addCardOperation(card.getId(), "nada", i);
-					assertThat(newBalance).isEqualTo(balance + i);
-					assertThat(cardRegistry.getCardBalance(card.getId())).isEqualTo(newBalance);
-					balance = newBalance;
-				}
-			}
-		}).run();
-	}
+//	private CardRegistry cardRegistry = null;
+//
+//	public CardRegistryTest() {}
+//
+//	@Before
+//	public void setUp() throws Exception
+//	{
+//		cardRegistry = new CardRegistryImpl();
+//		Utils.skipDelay(true);
+//	}
+//
+//	@Test public void baseTest()
+//	{
+//		try {
+//			final Card card = cardRegistry.newCard(TEST_CARD_HOLDER, TEST_LABEL);
+//			assertThat(card).isNotNull();
+//			assertThat(card.getCardHolder()).isEqualTo(TEST_CARD_HOLDER);
+//
+//			final double balance = cardRegistry.getCardBalance(card.getId());
+//			assertThat(balance).isEqualTo(0d);
+//
+//			final Card other = cardRegistry.getCard(card.getId());
+//			assertThat(other).isEqualTo(card);
+//
+//			final double value = 44d;
+//			final double newValue = cardRegistry.addCardOperation(card.getId(), "test", value);
+//			assertThat(newValue).isEqualTo(value);
+//
+//			final double newBalance = cardRegistry.getCardBalance(card.getId());
+//			assertThat(newBalance).isEqualTo(value);
+//
+//			final UID invalidId = new UID();
+//			assertThat(cardRegistry.getCard(invalidId)).isNull();
+//			assertThat(cardRegistry.getCardBalance(invalidId)).isEqualTo(CardRegistry.CARD_NOT_FOUND);
+//		} catch (RemoteException ignored) {}
+//	}
+//
+//	@Test public void amountsTest()
+//	{
+//		try {
+//			final Card card = cardRegistry.newCard(TEST_CARD_HOLDER, TEST_LABEL);
+//			assertThat(card).isNotNull();
+//			assertThat(card.getCardHolder()).isEqualTo(TEST_CARD_HOLDER);
+//
+//			final double balance = cardRegistry.getCardBalance(card.getId());
+//			assertThat(balance).isEqualTo(0d);
+//
+//			final double value = 44d;
+//			final double newValue = cardRegistry.addCardOperation(card.getId(), "test", value);
+//			assertThat(newValue).isEqualTo(value);
+//
+//			assertThat(cardRegistry.getCardBalance(card.getId())).isEqualTo(value);
+//
+//			assertThat(cardRegistry.addCardOperation(card.getId(), "test", 99d)).isEqualTo(CardRegistry.OPERATION_NOT_PERMITTED_BY_BALANCE);
+//			assertThat(cardRegistry.addCardOperation(card.getId(), "test", -99d)).isEqualTo(CardRegistry.OPERATION_NOT_PERMITTED_BY_BALANCE);
+//
+//			assertThat(cardRegistry.getCardBalance(card.getId())).isEqualTo(value);
+//		} catch (RemoteException ignored) {}
+//	}
+//
+//	@Test public void concurrencyBaseTest()
+//	{
+//		new MultithreadingTester().add(new RunnableAssert("testing")
+//		{
+//			@Override
+//			public void run() throws Exception
+//			{
+//				final String cardHolder = randomString(TEST_CARD_HOLDER);
+//				final String label = randomString(TEST_LABEL);
+//				final Card card = cardRegistry.newCard(cardHolder, label);
+//
+//				assertThat(card.getCardHolder()).isEqualTo(cardHolder);
+//				assertThat(card.getLabel()).isEqualTo(label);
+//
+//				final Card other = cardRegistry.getCard(card.getId());
+//				assertThat(other).isEqualTo(card);
+//
+//				double balance = cardRegistry.getCardBalance(card.getId());
+//				assertThat(balance).isEqualTo(0d);
+//
+//				for (int i = 0; i < 10; i++) {
+//					final double newBalance = cardRegistry.addCardOperation(card.getId(), "nada", i);
+//					assertThat(newBalance).isEqualTo(balance + i);
+//					assertThat(cardRegistry.getCardBalance(card.getId())).isEqualTo(newBalance);
+//					balance = newBalance;
+//				}
+//			}
+//		}).run();
+//	}
 }
