@@ -35,15 +35,14 @@ public class CardServiceRegistryImpl extends UnicastRemoteObject implements Card
 	}
 
 	@Override
-	public Collection<CardService> getServices() throws RemoteException
-	{
+	public Collection<CardService> getServices() throws RemoteException {
 		return serviceList;
 	}
 
-	CardService getCardService()
-	{
+	CardService getCardService() {
 		if (serviceList.size() > 0) {
 			int nextCardService =  this.nextCardService.getAndIncrement();
+
 			return serviceList.get(nextCardService % serviceList.size());
 		} else {
 			throw new NoCardServiceException();

@@ -72,6 +72,7 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
     }
 
     public void finalize() {
+        downloadToServer();
         clusterInteraction.disconnect();
     }
 
