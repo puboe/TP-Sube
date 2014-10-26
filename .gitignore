@@ -12,3 +12,4 @@ dependency-reduced-pom.xml
 .settings
 *.iml
 .project
+cards.data

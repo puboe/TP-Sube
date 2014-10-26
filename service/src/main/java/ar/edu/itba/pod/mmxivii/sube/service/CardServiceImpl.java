@@ -81,8 +81,12 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
                 double balance = cardRegistry.getCardBalance(cardId);
                 CardState cardState = cardStates.get(cardId);
                 double operationAmount = cardState.getAmount() - balance;
-                return cardRegistry.addCardOperation(cardId, "Operation", operationAmount);
+                if(operationAmount != 0) {
+                    System.out.println("Downloading operation. UID: " + cardId + ", amount: $" + operationAmount);
+                    cardRegistry.addCardOperation(cardId, "Operation", operationAmount);
+                }
             }
+            return 0;
         } catch (Exception e) {
             System.out.println("Could not download to server.");
             e.printStackTrace();

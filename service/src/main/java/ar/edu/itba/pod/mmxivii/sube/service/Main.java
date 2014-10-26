@@ -52,14 +52,12 @@ public class Main extends BaseMain {
             @Override
             public void run() {
                 if(cardService.isLeader()) {
-                    System.out.println("Downloading to server.");
                     cardService.downloadToServer();
                 }
             }
         };
-
-        Timer timer = new Timer("DownloadTimer");//create a new Timer
-        timer.scheduleAtFixedRate(timerTask, 30, 30000);//this line starts the timer at the same time its executed
+        Timer timer = new Timer("DownloadTimer"); //create a new Timer
+        timer.scheduleAtFixedRate(timerTask, 30, 30000); //this line starts the timer at the same time its executed
 
 		final Scanner scan = new Scanner(System.in);
 		String line;

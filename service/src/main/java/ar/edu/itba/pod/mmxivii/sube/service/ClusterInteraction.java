@@ -23,8 +23,6 @@ class ClusterInteraction extends ReceiverAdapter {
     private Lock leaderLock;
     private Thread racingThread;
     
-    private boolean isLeader = false;
-
     public ClusterInteraction(@Nonnull CardServiceImpl cardService) throws Exception {
         System.out.println("Running...");
         this.cardService = cardService;
@@ -53,26 +51,24 @@ class ClusterInteraction extends ReceiverAdapter {
     }
 
     public void receive(Message msg) {
-//        if(!myAddress.equals(msg.getSrc())) {
-	    	System.out.println(msg.getSrc() + ": " + msg.getObject());
-            try {
-                Operation operation = (Operation) msg.getObject();
+        System.out.println(msg.getSrc() + ": " + msg.getObject());
+        try {
+            Operation operation = (Operation) msg.getObject();
 
-                if(operation != null && (operation instanceof Operation)) {
-                    ConcurrentHashMap<UID, CardState> cardStates = cardService.getCardStates();
-                    if(!cardStates.containsKey(operation.getCardId())) {
-                        cardStates.put(operation.getCardId(), new CardState(0, Calendar.getInstance().getTime()));
-                    }
-                    CardState cardState = cardStates.get(operation.getCardId());
-                    cardState.setAmount(cardState.getAmount() + operation.getAmount());
-                    if(operation.getTimestamp().after(cardState.getTimestamp())) {
-                        cardState.setTimestamp(operation.getTimestamp());
-                    }
+            if (operation != null && (operation instanceof Operation)) {
+                ConcurrentHashMap<UID, CardState> cardStates = cardService.getCardStates();
+                if (!cardStates.containsKey(operation.getCardId())) {
+                    cardStates.put(operation.getCardId(), new CardState(0, Calendar.getInstance().getTime()));
                 }
-            } catch(ClassCastException e) {
-                System.out.println("Me mandaron cualquier cosa: " + e.getLocalizedMessage());
+                CardState cardState = cardStates.get(operation.getCardId());
+                cardState.setAmount(cardState.getAmount() + operation.getAmount());
+                if (operation.getTimestamp().after(cardState.getTimestamp())) {
+                    cardState.setTimestamp(operation.getTimestamp());
+                }
             }
-//        }
+        } catch (ClassCastException e) {
+            System.out.println("Me mandaron cualquier cosa: " + e.getLocalizedMessage());
+        }
     }
 
     public void send(Operation operation) {
@@ -82,14 +78,6 @@ class ClusterInteraction extends ReceiverAdapter {
         } catch(Exception e) {
             System.out.println("Could not send operation: " + operation);
         }
-    }
-
-    public JChannel getChannel() {
-        return channel;
-    }
-
-    public boolean isLeader() {
-        return isLeader;
     }
 
     public void raceForLeader() {
