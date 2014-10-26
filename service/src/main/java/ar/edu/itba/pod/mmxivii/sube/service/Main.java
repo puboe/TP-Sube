@@ -65,7 +65,9 @@ public class Main extends BaseMain {
 			line = scan.next();
             printBalance();
 		} while(!"x".equals(line));
-        cardServiceRegistry.unRegisterService(cardService);
+        try {
+            cardServiceRegistry.unRegisterService(cardService);
+        } catch(Exception e) {}
         cardService.finalize();
 		System.out.println("Service exit.");
 		System.exit(0);

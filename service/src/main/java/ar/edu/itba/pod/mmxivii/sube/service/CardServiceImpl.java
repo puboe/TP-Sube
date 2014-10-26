@@ -31,7 +31,7 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
 
 	@Override
 	public double travel(@Nonnull UID id, @Nonnull String description, double amount) throws RemoteException {
-
+        System.out.println("Travel " + id + ". Amount: " + amount);
         double result = validateOperation(id, amount * -1);
         if(result > 0) {
             clusterInteraction.send(new Operation(id, amount * -1));
@@ -41,7 +41,7 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
 
 	@Override
 	public double recharge(@Nonnull UID id, @Nonnull String description, double amount) throws RemoteException {
-
+        System.out.println("Recharge " + id + ". Amount: " + amount);
         double result = validateOperation(id, amount);
         if(result > 0) {
             clusterInteraction.send(new Operation(id, amount));
@@ -89,7 +89,7 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
             return 0;
         } catch (Exception e) {
             System.out.println("Could not download to server.");
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return CardRegistry.CANNOT_PROCESS_REQUEST;
     }

@@ -11,13 +11,18 @@ import java.util.Date;
  */
 class Operation implements Serializable {
 
-    private Date timestamp = Calendar.getInstance().getTime();
+    private Date timestamp;
     private double amount;
     private UID cardId;
 
     Operation(@Nonnull UID cardId, double amount) {
+        this(cardId, amount, Calendar.getInstance().getTime());
+    }
+
+    Operation(@Nonnull UID cardId, double amount, Date timestamp) {
         this.amount = amount;
         this.cardId =  cardId;
+        this.timestamp = timestamp;
     }
 
     Date getTimestamp() {

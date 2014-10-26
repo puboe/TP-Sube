@@ -7,6 +7,9 @@ import javax.annotation.Nonnull;
 
 import java.rmi.server.UID;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 
@@ -17,6 +20,7 @@ class ClusterInteraction extends ReceiverAdapter {
 
     private JChannel channel;
     private Address myAddress;
+    private Set<Address> addresses = new HashSet<Address>();
     private CardServiceImpl cardService;
     private final String CLUSTER_NAME = "SERVICE_CLUSTER";
     private LockService lockService;
@@ -38,6 +42,7 @@ class ClusterInteraction extends ReceiverAdapter {
 
         channel.connect(clusterName);
         myAddress = channel.getAddress();
+        addresses.add(myAddress);
     }
 
     public void disconnect() {
@@ -47,7 +52,16 @@ class ClusterInteraction extends ReceiverAdapter {
     }
 
     public void viewAccepted(View new_view) {
-        System.out.println("Members: " + new_view.getMembers());
+        List<Address> members = new_view.getMembers();
+        System.out.println("Members: " + members);
+        for(Address member: members) {
+            if(!addresses.contains(member)) {
+                addresses.add(member);
+                if(cardService.isLeader()) {
+                    updateNewServiceInstance(member);
+                }
+            }
+        }
     }
 
     public void receive(Message msg) {
@@ -72,7 +86,11 @@ class ClusterInteraction extends ReceiverAdapter {
     }
 
     public void send(Operation operation) {
-        Message msg = new Message(null, null, operation);
+       send(operation, null);
+    }
+
+    private void send(Operation operation, Address address) {
+        Message msg = new Message(address, null, operation);
         try {
             channel.send(msg);
         } catch(Exception e) {
@@ -80,7 +98,7 @@ class ClusterInteraction extends ReceiverAdapter {
         }
     }
 
-    public void raceForLeader() {
+    private void raceForLeader() {
     	racingThread = new Thread() {
 	    	@Override
 	    	public void run()
@@ -93,5 +111,14 @@ class ClusterInteraction extends ReceiverAdapter {
     	};
     	racingThread.setDaemon(true);
     	racingThread.start();
+    }
+
+    private void updateNewServiceInstance(Address address) {
+        System.out.println("Updating " + address.toString());
+        for(UID cardId: cardService.getCardStates().keySet()) {
+            CardState cardState = cardService.getCardStates().get(cardId);
+            Operation operation = new Operation(cardId, cardState.getAmount(), cardState.getTimestamp());
+            send(operation, address);
+        }
     }
 }
