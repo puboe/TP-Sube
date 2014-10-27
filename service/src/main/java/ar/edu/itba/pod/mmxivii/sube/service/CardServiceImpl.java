@@ -26,7 +26,10 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
 
 	@Override
 	public double getCardBalance(@Nonnull UID id) throws RemoteException {
-		return cardRegistry.getCardBalance(id);
+		if(cardStates.contains(id)) {
+            return cardStates.get(id).getAmount();
+        }
+        return cardRegistry.getCardBalance(id);
 	}
 
 	@Override
@@ -34,7 +37,9 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
         System.out.println("Travel " + id + ". Amount: " + amount);
         double result = validateOperation(id, amount * -1);
         if(result > 0) {
-            clusterInteraction.send(new Operation(id, amount * -1));
+            Operation operation = new Operation(id, amount * -1);
+            saveOperation(operation);
+            clusterInteraction.send(operation);
         }
 		return result;
 	}
@@ -44,10 +49,23 @@ public class CardServiceImpl extends UnicastRemoteObject implements CardService 
         System.out.println("Recharge " + id + ". Amount: " + amount);
         double result = validateOperation(id, amount);
         if(result > 0) {
-            clusterInteraction.send(new Operation(id, amount));
+            Operation operation = new Operation(id, amount);
+            saveOperation(operation);
+            clusterInteraction.send(operation);
         }
         return result;
 	}
+
+    private void saveOperation(Operation operation) {
+        if (!cardStates.containsKey(operation.getCardId())) {
+            cardStates.put(operation.getCardId(), new CardState(0, Calendar.getInstance().getTime()));
+        }
+        CardState cardState = cardStates.get(operation.getCardId());
+        cardState.setAmount(cardState.getAmount() + operation.getAmount());
+        if (operation.getTimestamp().after(cardState.getTimestamp())) {
+            cardState.setTimestamp(operation.getTimestamp());
+        }
+    }
 
     private double validateOperation(UID id, double amount) {
 

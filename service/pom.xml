@@ -15,6 +15,17 @@
             <artifactId>sube-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>itba-pod-2014-2c</groupId>
+            <artifactId>sube-common</artifactId>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>itba-pod-2014-2c</groupId>
+            <artifactId>sube-server</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>tests</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
         </dependency>

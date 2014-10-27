@@ -65,23 +65,25 @@ class ClusterInteraction extends ReceiverAdapter {
     }
 
     public void receive(Message msg) {
-        System.out.println(msg.getSrc() + ": " + msg.getObject());
-        try {
-            Operation operation = (Operation) msg.getObject();
+        if(!myAddress.equals(msg.getSrc())) {
+            System.out.println(msg.getSrc() + ": " + msg.getObject());
+            try {
+                Operation operation = (Operation) msg.getObject();
 
-            if (operation != null && (operation instanceof Operation)) {
-                ConcurrentHashMap<UID, CardState> cardStates = cardService.getCardStates();
-                if (!cardStates.containsKey(operation.getCardId())) {
-                    cardStates.put(operation.getCardId(), new CardState(0, Calendar.getInstance().getTime()));
+                if (operation != null && (operation instanceof Operation)) {
+                    ConcurrentHashMap<UID, CardState> cardStates = cardService.getCardStates();
+                    if (!cardStates.containsKey(operation.getCardId())) {
+                        cardStates.put(operation.getCardId(), new CardState(0, Calendar.getInstance().getTime()));
+                    }
+                    CardState cardState = cardStates.get(operation.getCardId());
+                    cardState.setAmount(cardState.getAmount() + operation.getAmount());
+                    if (operation.getTimestamp().after(cardState.getTimestamp())) {
+                        cardState.setTimestamp(operation.getTimestamp());
+                    }
                 }
-                CardState cardState = cardStates.get(operation.getCardId());
-                cardState.setAmount(cardState.getAmount() + operation.getAmount());
-                if (operation.getTimestamp().after(cardState.getTimestamp())) {
-                    cardState.setTimestamp(operation.getTimestamp());
-                }
+            } catch (ClassCastException e) {
+                System.out.println("Me mandaron cualquier cosa: " + e.getLocalizedMessage());
             }
-        } catch (ClassCastException e) {
-            System.out.println("Me mandaron cualquier cosa: " + e.getLocalizedMessage());
         }
     }
 
